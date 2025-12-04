@@ -1,11 +1,15 @@
 "use client";
 import React from "react";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
+import Navbar from "@/components/Navbar";
 import Image from "next/image";
 
 export default function HeroScrollDemo() {
     return (
-        <div className="flex flex-col overflow-hidden pb-[500px] pt-[1000px]">
+        <div className="flex flex-col overflow-hidden pb-[500px] pt-[1000px] relative">
+            <div className="fixed top-0 w-full z-50">
+                <Navbar />
+            </div>
             <ContainerScroll
                 titleComponent={
                     <>

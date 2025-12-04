@@ -6,6 +6,8 @@ import { Cpu, Globe, Recycle } from "lucide-react";
 import { DotScreenShader } from "@/components/ui/dot-shader-background";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import ScrollExpandMedia from "@/components/ui/scroll-expansion-hero";
+import { ComparisonSection } from "@/components/ui/comparison-section";
+import { RoleSelection } from "@/components/ui/role-selection";
 
 export default function Home() {
   return (
@@ -21,29 +23,12 @@ export default function Home() {
         textBlend
       >
         <div className="max-w-4xl mx-auto text-center space-y-6">
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white">
+          <h2 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600">
             Libérez votre école des GAFAM
           </h2>
-          <p className="text-lg md:text-xl text-slate-700 dark:text-slate-300">
+          <p className="text-lg md:text-xl text-emerald-700 dark:text-emerald-300 font-medium">
             NIRD (Numérique Inclusif, Responsable, Durable) est un mouvement qui aide les écoles à adopter des solutions numériques libres, économiques et écologiques.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-            <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-6">
-              <div className="text-4xl mb-2">🎯</div>
-              <div className="text-2xl font-bold text-emerald-600">Inclusion</div>
-              <div className="text-sm text-slate-600 dark:text-slate-400">Logiciels libres gratuits pour tous</div>
-            </div>
-            <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-6">
-              <div className="text-4xl mb-2">⚖️</div>
-              <div className="text-2xl font-bold text-emerald-600">Responsabilité</div>
-              <div className="text-sm text-slate-600 dark:text-slate-400">Données protégées en France</div>
-            </div>
-            <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl p-6">
-              <div className="text-4xl mb-2">🌱</div>
-              <div className="text-2xl font-bold text-emerald-600">Durabilité</div>
-              <div className="text-sm text-slate-600 dark:text-slate-400">30kg déchets évités par PC</div>
-            </div>
-          </div>
         </div>
       </ScrollExpandMedia>
 
@@ -91,6 +76,9 @@ export default function Home() {
                 description="Stop obsolescence programmée, Linux = moins d'énergie, 30kg déchets évités/PC."
               />
             </motion.div>
+
+            {/* NEW: BIG TECH vs NIRD COMPARISON */}
+            <ComparisonSection />
 
             {/* GLASSMORPHISM STATS BAR */}
             <div className="w-full max-w-4xl p-2 rounded-3xl bg-white/60 backdrop-blur-md border border-white shadow-xl shadow-slate-200/50">
@@ -149,6 +137,9 @@ export default function Home() {
               </div>
             </ContainerScroll>
           </div>
+
+          {/* NEW: ROLE SELECTION (Gamified CTA) */}
+          <RoleSelection />
 
           {/* FOOTER */}
           <footer className="w-full flex flex-col items-center justify-center border-t border-slate-200 bg-white/50 backdrop-blur-sm mx-auto text-center text-xs gap-4 py-12 text-slate-500 mt-10">

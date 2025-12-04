@@ -179,7 +179,7 @@ function Scene() {
 export const DotScreenShader = () => {
     return (
         <Canvas
-            dpr={[1, 1.5]}
+            dpr={[1, 1]} // Reduced max dpr for performance
             gl={{
                 antialias: false,
                 powerPreference: 'high-performance',

@@ -175,13 +175,14 @@ const ScrollExpandMedia = ({
                     <div className='container mx-auto flex flex-col items-center justify-start relative z-10'>
                         <div className='flex flex-col items-center justify-center w-full h-[100dvh] relative'>
                             <div
-                                className='absolute z-0 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-none rounded-2xl'
+                                className='absolute z-0 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-none rounded-2xl will-change-transform'
                                 style={{
                                     width: `${mediaWidth}px`,
                                     height: `${mediaHeight}px`,
                                     maxWidth: '95vw',
                                     maxHeight: '85vh',
                                     boxShadow: '0px 0px 50px rgba(0, 0, 0, 0.3)',
+                                    transform: 'translate(-50%, -50%) translateZ(0)', // Force GPU
                                 }}
                             >
                                 {mediaType === 'image' ? (
@@ -224,7 +225,7 @@ const ScrollExpandMedia = ({
                                 <div className='flex flex-col items-center text-center relative z-10 mt-4 transition-none'>
                                     {date && (
                                         <p
-                                            className='text-2xl text-blue-200'
+                                            className='text-2xl text-emerald-300 font-semibold'
                                             style={{ transform: `translateX(-${textTranslateX}vw)` }}
                                         >
                                             {date}
@@ -232,7 +233,7 @@ const ScrollExpandMedia = ({
                                     )}
                                     {scrollToExpand && (
                                         <p
-                                            className='text-blue-200 font-medium text-center'
+                                            className='text-teal-300 font-medium text-center'
                                             style={{ transform: `translateX(${textTranslateX}vw)` }}
                                         >
                                             {scrollToExpand}
@@ -246,13 +247,13 @@ const ScrollExpandMedia = ({
                                     }`}
                             >
                                 <motion.h2
-                                    className='text-4xl md:text-5xl lg:text-6xl font-bold text-blue-200 transition-none'
+                                    className='text-4xl md:text-5xl lg:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-600 transition-none'
                                     style={{ transform: `translateX(-${textTranslateX}vw)` }}
                                 >
                                     {firstWord}
                                 </motion.h2>
                                 <motion.h2
-                                    className='text-4xl md:text-5xl lg:text-6xl font-bold text-center text-blue-200 transition-none'
+                                    className='text-4xl md:text-5xl lg:text-6xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 via-teal-500 to-emerald-600 transition-none'
                                     style={{ transform: `translateX(${textTranslateX}vw)` }}
                                 >
                                     {restOfTitle}
