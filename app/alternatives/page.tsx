@@ -87,12 +87,4 @@ export default function AlternativePage() {
   );
 }
 
-function StarRating() {
-  return (
-    <>
-      {[1, 2, 3, 4, 5].map((i) => (
-        <Zap key={i} size={14} className="text-amber-400 fill-amber-400" />
-      ))}
-    </>
-  );
-}
+
