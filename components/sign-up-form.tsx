@@ -15,11 +15,15 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 export function SignUpForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const searchParams = useSearchParams();
+  const role = searchParams.get('role');
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
@@ -46,7 +50,7 @@ export function SignUpForm({
         options: {
           emailRedirectTo: `${window.location.origin}/protected`,
           data: {
-            role: "student",
+            role: role,
           }
         },
       });

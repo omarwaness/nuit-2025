@@ -1,5 +1,6 @@
 "use client";
 
+import { LogoutButton } from "@/components/logout-button";
 import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
 import { Target, Heart, Globe, ArrowRight, Lightbulb, ShieldCheck, Leaf } from "lucide-react";
@@ -34,13 +35,6 @@ export default function MissionPage() {
           <p className="text-emerald-50 text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed">
             We are on a mission to empower schools and families to reclaim their digital independence through repair, reuse, and open-source education.
           </p>
-        </div>
-
-        {/* The "MadBox" Curve - White separator */}
-        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-[0]">
-           <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-[calc(100%+1.3px)] h-[60px] md:h-[100px] fill-slate-50">
-               <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"></path>
-           </svg>
         </div>
       </div>
 
@@ -139,7 +133,7 @@ export default function MissionPage() {
             </div>
          </div>
       </div>
-
+      <LogoutButton/>
     </main>
   );
 }
