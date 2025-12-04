@@ -29,7 +29,7 @@ export default function Navbar() {
       }}
       animate={hidden ? "hidden" : "visible"}
       transition={{ duration: 0.35, ease: "easeInOut" }}
-      className="fixed top-0 inset-x-0 z-50 w-full flex justify-center h-24 bg-white/70 backdrop-blur-md border-b border-slate-200/50 shadow-xl mr-6 ml-6 rounded-b-3xl"
+      className="fixed top-0 inset-x-0 z-50 w-full flex justify-center h-24 bg-transparent backdrop-blur-md border-slate-200/50 shadow-xl rounded-b-3xl"
     >
       <div className="w-full max-w-7xl flex justify-between items-center px-6 text-sm">
         {/* LOGO */}
