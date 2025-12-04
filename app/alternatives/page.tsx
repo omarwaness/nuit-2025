@@ -13,13 +13,21 @@ import {
   Server,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getAlternatives } from "@/queries/alternatives";
+import { getAlternatives } from "@/queries/getAlternatives";
+import { Alternative } from "@/types/alternatives";
+import ComparisonCard from "@/components/ComparisonCard";
 
 export default function AlternativePage() {
-  const [alternatives, setAlternatives] = useState<any[]>([]);
+  const [alternatives, setAlternatives] = useState<Alternative[]>([]);
   useEffect(() => {
-    getAlternatives().then((data) => setAlternatives(data));
+    const fetchData = async () => {
+      const data = await getAlternatives();
+      setAlternatives(data);
+    };
+
+    fetchData();
   }, []);
+
   console.log(alternatives);
 
   return (
@@ -54,8 +62,10 @@ export default function AlternativePage() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div></div>
+      <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
+        {alternatives.map((item) => (
+          <ComparisonCard key={item.id} data={item} />
+        ))}
       </div>
 
       {/* --- SECTION 4: DOWNLOAD / CTA --- */}
@@ -74,76 +84,6 @@ export default function AlternativePage() {
         </div>
       </div>
     </main>
-  );
-}
-
-
-function ComparisonCard({
-  category,
-  badOption,
-  goodOption,
-  description,
-  impact,
-  impactColor,
-}: any) {
-  return (
-    <motion.div
-      whileHover={{ y: -5 }}
-      className="group bg-white rounded-3xl p-1 shadow-sm border border-slate-200 hover:shadow-xl hover:shadow-violet-500/10 hover:border-violet-200 transition-all duration-300"
-    >
-      <div className="h-full flex flex-col p-6">
-        {/* Header Badge */}
-        <div className="mb-6 flex justify-between items-center">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-            {category}
-          </span>
-          <span
-            className={`px-3 py-1 rounded-full text-xs font-bold ${impactColor}`}
-          >
-            {impact}
-          </span>
-        </div>
-
-        {/* The SWAP Action Visual */}
-        <div className="flex items-center gap-4 mb-6">
-          {/* Bad Option */}
-          <div className="flex-1 p-4 rounded-2xl bg-slate-50 border border-slate-100 text-center opacity-60 group-hover:opacity-50 transition-opacity">
-            <span className="block text-sm text-slate-400 font-semibold mb-1 line-through decoration-red-400">
-              Switch From
-            </span>
-            <div className="font-bold text-slate-700">{badOption}</div>
-          </div>
-
-          {/* Swap Icon */}
-          <div className="w-8 h-8 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center flex-shrink-0 group-hover:rotate-180 transition-transform duration-500">
-            <ArrowRightLeft size={16} />
-          </div>
-
-          {/* Good Option */}
-          <div className="flex-1 p-4 rounded-2xl bg-emerald-50 border border-emerald-100 text-center shadow-sm">
-            <span className="block text-sm text-emerald-600 font-semibold mb-1">
-              Switch To
-            </span>
-            <div className="font-bold text-slate-900">{goodOption}</div>
-          </div>
-        </div>
-
-        {/* Description */}
-        <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-grow">
-          {description}
-        </p>
-
-        {/* Action Footer */}
-        <div className="pt-6 border-t border-slate-100 flex justify-between items-center">
-          <div className="flex gap-1">
-            <StarRating />
-          </div>
-          <button className="flex items-center gap-2 text-violet-600 font-bold text-sm hover:gap-3 transition-all">
-            Get Guide <ArrowRightLeft className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-    </motion.div>
   );
 }
 
