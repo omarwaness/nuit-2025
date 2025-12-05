@@ -88,7 +88,13 @@ export default function MissionPage() {
            </div>
            {/* Placeholder for Image/Illustration */}
            <div className="flex-1 w-full h-80 bg-slate-200 rounded-3xl flex items-center justify-center border-2 border-dashed border-slate-300">
-              <span className="text-slate-400 font-semibold">Insert Image: E-Waste Pile</span>
+              <iframe
+    className="w-full h-full"
+    src="https://www.youtube.com/embed/Ex9ZDCv_yM8"
+    title="YouTube video player"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+  />
            </div>
         </div>
 
