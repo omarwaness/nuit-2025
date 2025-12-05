@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 2: Windows Is Dying</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #1c1e21;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            height: 85vh;
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mission-header {
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e4e6eb;
+            padding-bottom: 15px;
+        }
+
+        .mission-title {
+            font-size: 1.4rem;
+            color: #d93025;
+            font-weight: 800;
+        }
+
+        .mission-subtitle {
+            font-size: 0.9rem;
+            color: #65676b;
+            margin-top: 5px;
+        }
+
+        .task-list {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .task-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f7f8fa;
+            border-radius: 10px;
+            border-left: 4px solid #ccd0d5;
+            transition: all 0.3s ease;
+        }
+
+        .task-item.completed {
+            border-left-color: #34a853;
+            background: #e6f4ea;
+        }
+
+        .task-item.completed .task-title {
+            color: #1e8e3e;
+            text-decoration: line-through;
+        }
+
+        .task-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+
+        .task-cmd {
+            font-family: 'Consolas', monospace;
+            font-size: 0.85rem;
+            color: #1a73e8;
+            background: rgba(26, 115, 232, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* Scanner Interface */
+        .scanner-panel {
+            flex-grow: 1;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .scanner-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .scanner-title {
+            font-size: 1.8rem;
+            color: #1c1e21;
+            margin-bottom: 10px;
+        }
+
+        .scanner-desc {
+            color: #65676b;
+        }
+
+        .scan-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .scan-card {
+            background: #f0f2f5;
+            border: 2px solid #e4e6eb;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scan-card:hover {
+            border-color: #1a73e8;
+            background: #e8f0fe;
+            transform: translateY(-2px);
+        }
+
+        .scan-card.scanning::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            animation: scan 1.5s infinite;
+        }
+
+        .scan-card.done {
+            border-color: #d93025;
+            background: #fce8e6;
+            cursor: default;
+        }
+
+        .scan-card.done:hover {
+            transform: none;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .card-title {
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .card-cmd {
+            font-family: 'Consolas', monospace;
+            font-size: 0.8rem;
+            color: #65676b;
+        }
+
+        .result-box {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #d93025;
+            font-weight: 600;
+            display: none;
+        }
+
+        .scan-card.done .result-box {
+            display: block;
+        }
+
+        @keyframes scan {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Analysis Report */
+        .report-panel {
+            width: 100%;
+            background: #202124;
+            color: #e8eaed;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            display: none;
+            flex-grow: 1;
+        }
+
+        .report-title {
+            color: #fbbc04;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #5f6368;
+            padding-bottom: 5px;
+        }
+
+        .report-line {
+            margin-bottom: 5px;
+        }
+
+        .warning {
+            color: #ea4335;
+        }
+
+        /* Success Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .success-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .overlay.visible .success-box {
+            transform: scale(1);
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            font-size: 2rem;
+            color: #1a73e8;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .success-desc {
+            color: #65676b;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .next-btn {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(26, 115, 232, 0.3);
+            transition: all 0.2s;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 115, 232, 0.4);
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #65676b;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .back-btn:hover {
+            color: #1a73e8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html" class="back-btn">← Back to Globe</a>
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="mission-header">
+                <div class="mission-title">Level 2: Windows Is Dying</div>
+                <div class="mission-subtitle">Detect Unsupported Systems</div>
+            </div>
+
+            <ul class="task-list">
+                <li class="task-item" id="task-cpu">
+                    <div class="task-title">Detect CPU Generation</div>
+                    <div class="task-cmd">inxi -F</div>
+                </li>
+                <li class="task-item" id="task-ram">
+                    <div class="task-title">Detect Low RAM</div>
+                    <div class="task-cmd">cat /proc/meminfo</div>
+                </li>
+                <li class="task-item" id="task-verdict">
+                    <div class="task-title">Verdict: Incompatible</div>
+                    <div class="task-cmd">Analysis Complete</div>
+                </li>
+            </ul>
+
+            <div style="margin-top: auto;">
+                <div style="font-size: 0.85rem; color: #65676b;">Score:</div>
+                <div style="color: #1a73e8; font-weight: bold;">Budget +10</div>
+                <div style="color: #1a73e8; font-weight: bold;">Awareness +10</div>
+            </div>
+        </div>
+
+        <div class="scanner-panel">
+            <div class="scanner-header">
+                <h1 class="scanner-title">System Vulnerability Scanner</h1>
+                <p class="scanner-desc">Run diagnostics to check Windows 11 compatibility.</p>
+            </div>
+
+            <div class="scan-grid">
+                <div class="scan-card" onclick="runScan('cpu', this)">
+                    <span class="card-icon">💻</span>
+                    <div class="card-title">Check Processor</div>
+                    <div class="card-cmd">inxi -F</div>
+                    <div class="result-box">⚠️ Intel Core i5-6500 (Unsupported)</div>
+                </div>
+                <div class="scan-card" onclick="runScan('ram', this)">
+                    <span class="card-icon">💾</span>
+                    <div class="card-title">Check Memory</div>
+                    <div class="card-cmd">cat /proc/meminfo</div>
+                    <div class="result-box">⚠️ 4GB RAM (Insufficient)</div>
+                </div>
+            </div>
+
+            <div class="report-panel" id="report">
+                <div class="report-title">DIAGNOSTIC REPORT</div>
+                <div class="report-line">System: Windows 10 Pro (End of Life: Oct 2025)</div>
+                <div class="report-line">CPU: Intel Core i5-6500 @ 3.20GHz <span class="warning">[FAIL]</span></div>
+                <div class="report-line">TPM: Version 1.2 <span class="warning">[FAIL]</span></div>
+                <div class="report-line">RAM: 4096 MB <span class="warning">[FAIL]</span></div>
+                <div class="report-line">----------------------------------------</div>
+                <div class="report-line warning">CONCLUSION: HARDWARE UPGRADE REQUIRED FOR WINDOWS 11</div>
+                <div class="report-line warning">ESTIMATED COST: $800 per unit</div>
+                <div class="report-line" style="color: #34a853; margin-top: 10px;">RECOMMENDATION: MIGRATE TO LINUX
+                    (Cost: $0)</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="success-overlay">
+        <div class="success-box">
+            <div class="success-icon">🚫</div>
+            <div class="success-title">Obsolescence Detected!</div>
+            <div class="success-desc">You've identified that these machines cannot run Windows 11.<br>It's time for a
+                better solution.</div>
+            <button class="next-btn" onclick="completeLevel()">Proceed to Mission Ubuntu</button>
+        </div>
+    </div>
+
+    <script>
+        let scansCompleted = 0;
+
+        function runScan(type, card) {
+            if (card.classList.contains('done') || card.classList.contains('scanning')) return;
+
+            card.classList.add('scanning');
+
+            setTimeout(() => {
+                card.classList.remove('scanning');
+                card.classList.add('done');
+
+                document.getElementById('task-' + type).classList.add('completed');
+                scansCompleted++;
+
+                if (scansCompleted === 2) {
+                    showReport();
+                }
+            }, 1500);
+        }
+
+        function showReport() {
+            const report = document.getElementById('report');
+            report.style.display = 'block';
+
+            setTimeout(() => {
+                document.getElementById('task-verdict').classList.add('completed');
+                setTimeout(() => {
+                    document.getElementById('success-overlay').classList.add('visible');
+                }, 1500);
+            }, 1000);
+        }
+
+        function completeLevel() {
+            const levelId = 2;
+            const completedLevels = JSON.parse(localStorage.getItem('completedLevels') || '[]');
+            if (!completedLevels.includes(levelId)) {
+                completedLevels.push(levelId);
+                localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
+            }
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+
+</html>

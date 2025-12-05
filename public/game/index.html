@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Interactive 3D Globe Map - Explore the world with stunning visuals and smooth interactions">
+    <title>NIRD Educational Game - Interactive 3D Globe</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader"></div>
+        <p>Loading Globe...</p>
+    </div>
+
+    <!-- Main Canvas -->
+    <canvas id="globe-canvas"></canvas>
+
+    <!-- UI Overlay -->
+    <div id="ui-overlay">
+        <!-- Header Removed -->
+
+        <!-- Controls Panel -->
+        <div class="controls-panel">
+            <button id="toggle-rotation" class="control-btn" title="Toggle Auto-Rotation">
+                <span class="icon">🔄</span>
+                <span class="label">Auto-Rotate</span>
+            </button>
+            <button id="reset-camera" class="control-btn" title="Reset Camera">
+                <span class="icon">🎯</span>
+                <span class="label">Reset View</span>
+            </button>
+            <button id="toggle-clouds" class="control-btn" title="Toggle Clouds">
+                <span class="icon">☁️</span>
+                <span class="label">Clouds</span>
+            </button>
+            <button id="toggle-atmosphere" class="control-btn" title="Toggle Atmosphere">
+                <span class="icon">✨</span>
+                <span class="label">Atmosphere</span>
+            </button>
+        </div>
+
+        <!-- Info Panel -->
+        <div id="info-panel" class="info-panel hidden">
+            <button id="close-info" class="close-btn">×</button>
+            <div class="info-content">
+                <h2 id="info-title">Location Name</h2>
+                <button id="action-btn" class="action-btn">Start</button>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <h3>Pin States</h3>
+            <div class="legend-item">
+                <span class="legend-dot locked"></span>
+                <span>Locked</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-dot unlocked"></span>
+                <span>Unlocked</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-dot completed"></span>
+                <span>Completed</span>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions">
+            <p><strong>Controls:</strong></p>
+            <p>🖱️ Drag to rotate • 🔍 Scroll to zoom • 📍 Click pins to explore</p>
+        </div>
+    </div>
+
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <!-- Main Application -->
+    <script src="globe.js"></script>
+</body>
+
+</html>

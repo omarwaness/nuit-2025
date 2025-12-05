@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 7: Computer Recycling Lab</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #111;
+            color: #0f0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .lab-interface {
+            width: 900px;
+            height: 600px;
+            background: #000;
+            border: 2px solid #333;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(0, 255, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            position: relative;
+        }
+
+        .screen-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg,
+                    rgba(0, 0, 0, 0.15),
+                    rgba(0, 0, 0, 0.15) 1px,
+                    transparent 1px,
+                    transparent 2px);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .header {
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .status {
+            color: #555;
+        }
+
+        .status.active {
+            color: #0f0;
+            animation: blink 1s infinite;
+        }
+
+        .workspace {
+            flex-grow: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .device-view {
+            border: 1px solid #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pc-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            color: #555;
+            transition: color 0.5s;
+        }
+
+        .pc-icon.alive {
+            color: #0f0;
+            text-shadow: 0 0 20px #0f0;
+        }
+
+        .terminal-view {
+            border: 1px solid #333;
+            background: #050505;
+            padding: 15px;
+            font-size: 0.9rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .output-line {
+            margin-bottom: 5px;
+        }
+
+        .cmd-input-line {
+            display: flex;
+            margin-top: 10px;
+            color: #fff;
+        }
+
+        .prompt {
+            color: #0f0;
+            margin-right: 10px;
+        }
+
+        input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: inherit;
+            font-size: inherit;
+            flex-grow: 1;
+            outline: none;
+        }
+
+        .task-list {
+            margin-top: 20px;
+            border-top: 1px solid #333;
+            padding-top: 10px;
+            font-size: 0.8rem;
+            color: #777;
+        }
+
+        .task {
+            margin-bottom: 5px;
+        }
+
+        .task.done {
+            color: #0f0;
+            text-decoration: line-through;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Success Overlay */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 20, 0, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .success-title {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #0f0;
+        }
+
+        .success-desc {
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 10px 30px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            background: #fff;
+            box-shadow: 0 0 20px #fff;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #555;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            color: #0f0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html" class="back-btn">← Back to Globe</a>
+
+    <div class="lab-interface">
+        <div class="screen-overlay"></div>
+
+        <div class="header">
+            <div>RECYCLING LAB TERMINAL v2.4</div>
+            <div class="status active">ONLINE</div>
+        </div>
+
+        <div class="workspace">
+            <div class="device-view">
+                <div class="pc-icon" id="pc-icon">🖥️</div>
+                <div id="pc-status">Status: CRITICAL ERROR (No OS)</div>
+                <div style="margin-top: 10px; font-size: 0.8rem; color: #777;">
+                    Hardware: Intel Core 2 Duo, 2GB RAM
+                </div>
+            </div>
+
+            <div class="terminal-view" id="terminal" onclick="document.getElementById('cmd').focus()">
+                <div class="output-line">System booted from USB drive.</div>
+                <div class="output-line">Welcome to Linux Lite Live Environment.</div>
+                <div class="output-line"><br></div>
+
+                <div id="output-history"></div>
+
+                <div class="cmd-input-line">
+                    <span class="prompt">root@live:~$</span>
+                    <input type="text" id="cmd" autocomplete="off" spellcheck="false">
+                </div>
+            </div>
+        </div>
+
+        <div class="task-list">
+            <div class="task" id="task1">[ ] Identify disk (lsblk)</div>
+            <div class="task" id="task2">[ ] Format disk (mkfs.ext4 /dev/sda)</div>
+            <div class="task" id="task3">[ ] Install OS (install-lite)</div>
+        </div>
+    </div>
+
+    <div class="overlay" id="success-overlay">
+        <div class="success-title">SYSTEM REVIVED</div>
+        <div class="success-desc">Old hardware saved from the landfill. Running Linux Lite.</div>
+        <button class="btn" onclick="completeLevel()">Next Level</button>
+    </div>
+
+    <script>
+        const input = document.getElementById('cmd');
+        const history = document.getElementById('output-history');
+        const pcIcon = document.getElementById('pc-icon');
+        const pcStatus = document.getElementById('pc-status');
+
+        let step = 0;
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = input.value.trim();
+                processCommand(cmd);
+                input.value = '';
+            }
+        });
+
+        function log(text, color = '#ccc') {
+            const div = document.createElement('div');
+            div.className = 'output-line';
+            div.style.color = color;
+            div.innerText = text;
+            history.appendChild(div);
+            history.scrollTop = history.scrollHeight;
+        }
+
+        function processCommand(cmd) {
+            log(`root@live:~$ ${cmd}`, '#fff');
+
+            if (cmd === 'lsblk') {
+                log(`NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+sda      8:0    0 250.0G  0 disk 
+└─sda1   8:1    0 250.0G  0 part [CORRUPTED]
+sdb      8:16   1   8.0G  0 disk [USB BOOT]`, '#0f0');
+                document.getElementById('task1').classList.add('done');
+                if (step === 0) step = 1;
+            }
+            else if (cmd === 'mkfs.ext4 /dev/sda') {
+                if (step < 1) {
+                    log('Error: Check disk first.', 'red');
+                    return;
+                }
+                log('mke2fs 1.45.5 (07-Jan-2020)');
+                log('Creating filesystem with 65536000 4k blocks and 16384000 inodes');
+                log('Allocating group tables: done                            ');
+                log('Writing inode tables: done                            ');
+                log('Creating journal (262144 blocks): done');
+                log('Writing superblocks and filesystem accounting information: done', '#0f0');
+                document.getElementById('task2').classList.add('done');
+                if (step === 1) step = 2;
+            }
+            else if (cmd === 'install-lite') {
+                if (step < 2) {
+                    log('Error: Disk not formatted.', 'red');
+                    return;
+                }
+                log('Starting installer...', 'yellow');
+
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 10;
+                    log(`Installing... ${progress}%`);
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        log('Installation Complete. Rebooting...', '#0f0');
+                        pcIcon.classList.add('alive');
+                        pcStatus.innerText = "Status: OPERATIONAL (Linux Lite)";
+                        pcStatus.style.color = "#0f0";
+                        document.getElementById('task3').classList.add('done');
+                        setTimeout(() => {
+                            document.getElementById('success-overlay').classList.add('visible');
+                        }, 1500);
+                    }
+                }, 300);
+            }
+            else {
+                log(`Command not found: ${cmd}. Check tasks below.`, 'red');
+            }
+        }
+
+        function completeLevel() {
+            const levelId = 7;
+            const completedLevels = JSON.parse(localStorage.getItem('completedLevels') || '[]');
+            if (!completedLevels.includes(levelId)) {
+                completedLevels.push(levelId);
+                localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
+            }
+            window.location.href = 'index.html';
+        }
+
+        window.onload = () => input.focus();
+    </script>
+</body>
+
+</html>

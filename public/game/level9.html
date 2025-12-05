@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 9: The Open-Source Factory</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: #0d1117;
+            color: #c9d1d9;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .git-interface {
+            width: 1000px;
+            height: 650px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            background: #161b22;
+            padding: 16px;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .repo-icon {
+            font-size: 1.2rem;
+        }
+
+        .repo-name {
+            font-weight: 600;
+            color: #58a6ff;
+        }
+
+        .badge {
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 20px;
+            padding: 2px 10px;
+            font-size: 0.8rem;
+            color: #8b949e;
+        }
+
+        .workspace {
+            flex-grow: 1;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+        }
+
+        .sidebar {
+            border-right: 1px solid #30363d;
+            padding: 20px;
+        }
+
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            color: #8b949e;
+            transition: all 0.2s;
+        }
+
+        .step.active {
+            background: #1f6feb;
+            color: white;
+        }
+
+        .step.done {
+            color: #3fb950;
+        }
+
+        .step-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid currentColor;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .main-area {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #0d1117;
+        }
+
+        .action-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            display: none;
+        }
+
+        .action-card.visible {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #8b949e;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #c9d1d9;
+        }
+
+        .card-desc {
+            color: #8b949e;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            background: #238636;
+            color: white;
+            border: 1px solid rgba(27, 31, 35, 0.15);
+            border-radius: 6px;
+            padding: 8px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background: #2ea043;
+        }
+
+        /* Code Editor Simulation */
+        .code-editor {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            width: 100%;
+            text-align: left;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .line {
+            display: flex;
+            gap: 15px;
+        }
+
+        .line-num {
+            color: #484f58;
+            select: none;
+        }
+
+        .code {
+            color: #c9d1d9;
+        }
+
+        .code.add {
+            background: rgba(46, 160, 67, 0.15);
+            width: 100%;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Success Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 17, 23, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #a371f7;
+        }
+
+        .success-title {
+            font-size: 2rem;
+            color: #c9d1d9;
+            margin-bottom: 10px;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #8b949e;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            color: #58a6ff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html" class="back-btn">← Back to Globe</a>
+
+    <div class="git-interface">
+        <div class="header">
+            <span class="repo-icon">📓</span>
+            <span class="repo-name">nird-project / community-tools</span>
+            <span class="badge">Public</span>
+        </div>
+
+        <div class="workspace">
+            <div class="sidebar">
+                <div class="step-list">
+                    <div class="step active" id="step1-ind">
+                        <div class="step-num">1</div>
+                        <span>Fork Repository</span>
+                    </div>
+                    <div class="step" id="step2-ind">
+                        <div class="step-num">2</div>
+                        <span>Make Changes</span>
+                    </div>
+                    <div class="step" id="step3-ind">
+                        <div class="step-num">3</div>
+                        <span>Pull Request</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-area">
+                <!-- Step 1: Fork -->
+                <div class="action-card visible" id="card1">
+                    <div class="card-icon">Y</div>
+                    <div class="card-title">Fork this Project</div>
+                    <div class="card-desc">Create your own copy of the repository to start contributing safely without
+                        affecting the original project.</div>
+                    <button class="btn" onclick="nextStep(2)">Fork Repository</button>
+                </div>
+
+                <!-- Step 2: Commit -->
+                <div class="action-card" id="card2">
+                    <div class="card-title">Add Your Contribution</div>
+                    <div class="code-editor">
+                        <div class="line"><span class="line-num">1</span><span class="code">function shareKnowledge()
+                                {</span></div>
+                        <div class="line"><span class="line-num">2</span><span class="code"> const tools = ["Linux",
+                                "Firefox", "VLC"];</span></div>
+                        <div class="line"><span class="line-num">3</span><span class="code add">+
+                                tools.push("LibreOffice");</span></div>
+                        <div class="line"><span class="line-num">4</span><span class="code"> return tools;</span></div>
+                        <div class="line"><span class="line-num">5</span><span class="code">}</span></div>
+                    </div>
+                    <div class="card-desc">You've added a new tool to the list. Commit your changes to save them.</div>
+                    <button class="btn" onclick="nextStep(3)">Commit Changes</button>
+                </div>
+
+                <!-- Step 3: PR -->
+                <div class="action-card" id="card3">
+                    <div class="card-icon">🔀</div>
+                    <div class="card-title">Open Pull Request</div>
+                    <div class="card-desc">Propose your changes to the original repository. If accepted, your code will
+                        be used by everyone!</div>
+                    <button class="btn" onclick="finishLevel()">Create Pull Request</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="success-overlay">
+        <div class="success-icon">💜</div>
+        <div class="success-title">Merged!</div>
+        <div class="success-desc" style="color: #8b949e; margin-bottom: 30px;">You have successfully contributed to open
+            source.</div>
+        <button class="btn" onclick="completeLevel()">Next Mission</button>
+    </div>
+
+    <script>
+        function nextStep(step) {
+            // Hide all cards
+            document.querySelectorAll('.action-card').forEach(el => el.classList.remove('visible'));
+
+            // Show next card
+            document.getElementById('card' + step).classList.add('visible');
+
+            // Update sidebar
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            document.getElementById('step' + step + '-ind').classList.add('active');
+
+            // Mark previous as done
+            document.getElementById('step' + (step - 1) + '-ind').classList.add('done');
+        }
+
+        function finishLevel() {
+            document.getElementById('step3-ind').classList.add('done');
+            setTimeout(() => {
+                document.getElementById('success-overlay').classList.add('visible');
+            }, 500);
+        }
+
+        function completeLevel() {
+            const levelId = 9;
+            const completedLevels = JSON.parse(localStorage.getItem('completedLevels') || '[]');
+            if (!completedLevels.includes(levelId)) {
+                completedLevels.push(levelId);
+                localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
+            }
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+
+</html>

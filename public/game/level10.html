@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 10: Big Tech Strikes Back</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #222;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .desktop {
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;
+            position: relative;
+        }
+
+        /* Popups */
+        .popup {
+            position: absolute;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 400px;
+            overflow: hidden;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+        }
+
+        .popup-header {
+            padding: 10px 15px;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .popup-body {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .popup-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .popup-text {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.1s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-accept {
+            background: #4ade80;
+            color: #004d00;
+        }
+
+        .btn-reject {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* Company Themes */
+        .theme-g .popup-header {
+            background: #4285F4;
+        }
+
+        .theme-m .popup-header {
+            background: #00A4EF;
+        }
+
+        .theme-a .popup-header {
+            background: #FF9900;
+        }
+
+        .theme-f .popup-header {
+            background: #1877F2;
+        }
+
+        /* HUD */
+        .hud {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            border: 2px solid #fff;
+            z-index: 100;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        /* Success Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .success-title {
+            font-size: 3rem;
+            color: #fff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #fff;
+        }
+
+        .success-desc {
+            color: #aaa;
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+        }
+
+        .next-btn {
+            padding: 15px 40px;
+            background: white;
+            color: black;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            text-decoration: none;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html" class="back-btn">← Back to Globe</a>
+
+    <div class="desktop" id="desktop">
+        <div class="hud">Independence: <span id="score">100</span>%</div>
+    </div>
+
+    <div class="overlay" id="success-overlay">
+        <div class="success-title">RESISTANCE SUCCESSFUL</div>
+        <div class="success-desc">You rejected the monopoly. Your digital freedom is intact.</div>
+        <button class="next-btn" onclick="completeLevel()">Final Certification</button>
+    </div>
+
+    <div class="overlay" id="fail-overlay" style="background: rgba(100,0,0,0.9);">
+        <div class="success-title">YOU SOLD OUT</div>
+        <div class="success-desc">You accepted a restrictive contract. Try again.</div>
+        <button class="next-btn" onclick="location.reload()">Retry</button>
+    </div>
+
+    <script>
+        const desktop = document.getElementById('desktop');
+        const scoreEl = document.getElementById('score');
+        let score = 100;
+        let popupsActive = 0;
+        let wave = 0;
+        const maxWaves = 5;
+
+        const offers = [
+            { title: "Free Cloud Storage!", text: "Get 1TB free storage! We just need access to all your photos.", theme: "theme-g" },
+            { title: "Exclusive Browser", text: "Switch to Edge and get 500 reward points! (We track your history)", theme: "theme-m" },
+            { title: "Prime Student Deal", text: "Free shipping forever! Just link your bank account.", theme: "theme-a" },
+            { title: "Connect with Friends", text: "See what your friends are doing! (We sell your data)", theme: "theme-f" },
+            { title: "System Update", text: "Critical security update! Installs bloatware automatically.", theme: "theme-m" }
+        ];
+
+        function createPopup() {
+            if (wave >= maxWaves) return;
+
+            const offer = offers[Math.floor(Math.random() * offers.length)];
+            const popup = document.createElement('div');
+            popup.className = `popup ${offer.theme}`;
+
+            // Random position
+            const x = Math.random() * (window.innerWidth - 450);
+            const y = Math.random() * (window.innerHeight - 300);
+            popup.style.left = x + 'px';
+            popup.style.top = y + 'px';
+
+            popup.innerHTML = `
+                <div class="popup-header">
+                    <span>${offer.title}</span>
+                    <span style="cursor:pointer" onclick="reject(this.parentElement.parentElement)">✕</span>
+                </div>
+                <div class="popup-body">
+                    <div class="popup-title">Special Offer!</div>
+                    <div class="popup-text">${offer.text}</div>
+                    <div class="btn-group">
+                        <button class="btn btn-reject" onclick="reject(this.parentElement.parentElement.parentElement)">REJECT</button>
+                        <button class="btn btn-accept" onclick="accept()">ACCEPT</button>
+                    </div>
+                </div>
+            `;
+
+            desktop.appendChild(popup);
+            popupsActive++;
+            wave++;
+
+            // Auto-fail if too many pile up
+            if (popupsActive > 8) {
+                score -= 10;
+                updateScore();
+            }
+
+            // Schedule next popup
+            if (wave < maxWaves * 2) {
+                setTimeout(createPopup, Math.random() * 1000 + 500);
+            } else {
+                checkWin();
+            }
+        }
+
+        function reject(el) {
+            el.style.transform = "scale(0)";
+            setTimeout(() => el.remove(), 200);
+            popupsActive--;
+            checkWin();
+        }
+
+        function accept() {
+            score = 0;
+            updateScore();
+            document.getElementById('fail-overlay').classList.add('visible');
+        }
+
+        function updateScore() {
+            scoreEl.innerText = score;
+            if (score <= 0) {
+                document.getElementById('fail-overlay').classList.add('visible');
+            }
+        }
+
+        function checkWin() {
+            if (wave >= maxWaves && popupsActive === 0 && score > 0) {
+                setTimeout(() => {
+                    document.getElementById('success-overlay').classList.add('visible');
+                }, 1000);
+            }
+        }
+
+        function completeLevel() {
+            const levelId = 10;
+            const completedLevels = JSON.parse(localStorage.getItem('completedLevels') || '[]');
+            if (!completedLevels.includes(levelId)) {
+                completedLevels.push(levelId);
+                localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
+            }
+            window.location.href = 'index.html';
+        }
+
+        // Start game
+        setTimeout(createPopup, 1000);
+
+    </script>
+</body>
+
+</html>

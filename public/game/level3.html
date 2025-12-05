@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 3: Mission Ubuntu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            background: #333;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Installer Window */
+        .installer-window {
+            width: 900px;
+            height: 600px;
+            background: #f2f1ef;
+            border-radius: 8px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .window-header {
+            background: #3e3e3e;
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #777;
+        }
+
+        .control.close {
+            background: #e95420;
+        }
+
+        .installer-body {
+            flex-grow: 1;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: #2c001e;
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+
+        .step-item.active {
+            opacity: 1;
+            font-weight: bold;
+        }
+
+        .step-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: white;
+        }
+
+        .step-item.active .step-dot {
+            background: #e95420;
+            box-shadow: 0 0 10px #e95420;
+        }
+
+        /* Content Area */
+        .content {
+            flex-grow: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .step-content {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+        }
+
+        .step-content.active {
+            display: flex;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* Interactive Elements */
+        .option-card {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.2s;
+        }
+
+        .option-card:hover {
+            border-color: #e95420;
+            background: #fff5f2;
+        }
+
+        .option-card.selected {
+            border-color: #e95420;
+            background: #fff5f2;
+            box-shadow: 0 4px 12px rgba(233, 84, 32, 0.2);
+        }
+
+        .radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #aaa;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .option-card.selected .radio::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: #e95420;
+            border-radius: 50%;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-top: auto;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #e95420;
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .status-text {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary {
+            background: #ddd;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #ccc;
+        }
+
+        .btn-primary {
+            background: #e95420;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #d04618;
+        }
+
+        .btn-primary:disabled {
+            background: #ffbca8;
+            cursor: not-allowed;
+        }
+
+        /* Success Overlay */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(44, 0, 30, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .success-desc {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            text-decoration: none;
+            opacity: 0.7;
+        }
+
+        .back-btn:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html" class="back-btn">← Back to Globe</a>
+
+    <div class="installer-window">
+        <div class="window-header">
+            <span>Install Ubuntu 24.04 LTS</span>
+            <div class="window-controls">
+                <div class="control"></div>
+                <div class="control"></div>
+                <div class="control close"></div>
+            </div>
+        </div>
+
+        <div class="installer-body">
+            <div class="sidebar">
+                <div class="step-item active" id="nav-step1">
+                    <div class="step-dot"></div>Welcome
+                </div>
+                <div class="step-item" id="nav-step2">
+                    <div class="step-dot"></div>Installation Type
+                </div>
+                <div class="step-item" id="nav-step3">
+                    <div class="step-dot"></div>Installing
+                </div>
+                <div class="step-item" id="nav-step4">
+                    <div class="step-dot"></div>Complete
+                </div>
+            </div>
+
+            <div class="content">
+                <!-- Step 1: Welcome -->
+                <div class="step-content active" id="step1">
+                    <h1>Welcome to Ubuntu</h1>
+                    <p>You are about to install a free, open-source operating system that respects your privacy and
+                        gives you full control over your hardware.</p>
+
+                    <div class="option-card selected">
+                        <div class="radio"></div>
+                        <div>
+                            <strong>English</strong>
+                            <div style="font-size: 0.8rem; color: #666;">Recommended</div>
+                        </div>
+                    </div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="location.href='index.html'">Quit</button>
+                        <button class="btn btn-primary" onclick="nextStep(2)">Continue</button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Installation Type -->
+                <div class="step-content" id="step2">
+                    <h1>Installation Type</h1>
+                    <p>How would you like to install Ubuntu?</p>
+
+                    <div class="option-card" onclick="selectOption(this, 'erase')">
+                        <div class="radio"></div>
+                        <div>
+                            <strong>Erase disk and install Ubuntu</strong>
+                            <div style="font-size: 0.8rem; color: #d9534f;">Warning: This will delete Windows
+                                completely.</div>
+                        </div>
+                    </div>
+
+                    <div class="option-card" onclick="selectOption(this, 'dual')">
+                        <div class="radio"></div>
+                        <div>
+                            <strong>Install Ubuntu alongside Windows</strong>
+                            <div style="font-size: 0.8rem; color: #666;">Keep your files, choose OS at startup.</div>
+                        </div>
+                    </div>
+
+                    <div class="nav-buttons">
+                        <button class="btn btn-secondary" onclick="nextStep(1)">Back</button>
+                        <button class="btn btn-primary" id="btn-install" disabled onclick="startInstall()">Install
+                            Now</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Installing -->
+                <div class="step-content" id="step3">
+                    <h1>Installing Ubuntu...</h1>
+                    <p>Copying files and configuring system. Please wait.</p>
+
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                        <div class="status-text" id="status-text">Preparing to install...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="overlay" id="success-overlay">
+            <div class="success-icon">🐧</div>
+            <div class="success-title">Installation Complete!</div>
+            <div class="success-desc">You have successfully liberated this machine.</div>
+            <button class="btn btn-primary" onclick="completeLevel()">Restart Now</button>
+        </div>
+    </div>
+
+    <script>
+        function nextStep(step) {
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+
+            document.querySelectorAll('.step-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('nav-step' + step).classList.add('active');
+        }
+
+        function selectOption(card, type) {
+            document.querySelectorAll('.option-card').forEach(el => el.classList.remove('selected'));
+            card.classList.add('selected');
+            document.getElementById('btn-install').disabled = false;
+        }
+
+        function startInstall() {
+            nextStep(3);
+            const fill = document.getElementById('progress-fill');
+            const status = document.getElementById('status-text');
+            let width = 0;
+
+            const stages = [
+                "Copying files...",
+                "Installing system...",
+                "Configuring hardware...",
+                "Removing Windows bloatware...",
+                "Setting up security...",
+                "Finalizing..."
+            ];
+
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('success-overlay').classList.add('visible');
+                        document.getElementById('nav-step4').classList.add('active');
+                    }, 500);
+                } else {
+                    width += 1;
+                    fill.style.width = width + '%';
+
+                    if (width % 20 === 0) {
+                        status.textContent = stages[Math.floor(width / 20)];
+                    }
+                }
+            }, 50); // 5 seconds total
+        }
+
+        function completeLevel() {
+            const levelId = 3;
+            const completedLevels = JSON.parse(localStorage.getItem('completedLevels') || '[]');
+            if (!completedLevels.includes(levelId)) {
+                completedLevels.push(levelId);
+                localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
+            }
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+
+</html>

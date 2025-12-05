@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIRD Level - Digital Sovereignty Challenge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 25px;
+            padding: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .level-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .level-header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .level-badges {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .badge {
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .badge.difficulty {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+        }
+
+        .quiz-question {
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            border-left: 6px solid #667eea;
+            border-radius: 15px;
+            font-weight: 600;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+
+        .quiz-choices {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .choice-btn {
+            padding: 20px 25px;
+            background: #f7fafc;
+            border: 3px solid #e2e8f0;
+            border-radius: 15px;
+            color: #2d3748;
+            font-size: 1.05rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .choice-btn:hover {
+            background: #edf2f7;
+            border-color: #667eea;
+            transform: translateX(10px);
+        }
+
+        .choice-btn.selected {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: #667eea;
+            color: white;
+            font-weight: 700;
+            transform: scale(1.02);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 15px;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+            animation: bounceIn 0.5s ease-out;
+        }
+
+        .feedback.success {
+            background: linear-gradient(135deg, #84fab0, #8fd3f4);
+            color: #065f46;
+            border: 3px solid #10b981;
+        }
+
+        .feedback.error {
+            background: linear-gradient(135deg, #fa709a, #fee140);
+            color: #7f1d1d;
+            border: 3px solid #ef4444;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 15px 35px;
+            background: white;
+            border: 3px solid #e2e8f0;
+            border-radius: 50px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            display: block;
+            text-align: center;
+        }
+
+        .back-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-3px);
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+
+            70% {
+                transform: scale(0.9);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="quiz-container">
+        <div class="level-header">
+            <h1 id="level-name">Loading...</h1>
+            <div class="level-badges">
+                <span class="badge difficulty" id="level-difficulty"></span>
+            </div>
+        </div>
+
+        <div class="quiz-question" id="quiz-question"></div>
+
+        <div class="quiz-choices" id="quiz-choices"></div>
+
+        <button class="submit-btn" id="submit-btn" disabled>Submit Answer</button>
+
+        <div class="feedback" id="feedback"></div>
+
+        <a href="index.html" class="back-btn">← Back to Globe</a>
+    </div>
+
+    <script>
+        // Get level ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const levelId = parseInt(urlParams.get('id')) || 1;
+
+        // Level data
+        const levelData = [
+            {
+                id: 1, level: 1,
+                name: "🖥️ System Discovery",
+                difficulty: "Easy",
+                question: "Which command displays the operating system version details?",
+                choices: [
+                    "A) lsb_release -a",
+                    "B) free -h",
+                    "C) df -h"
+                ],
+                correctAnswer: "A"
+            },
+            {
+                id: 2,
+                level: 2,
+                name: "🎯 The Big Tech Trap",
+                difficulty: "Awareness",
+                question: "What is the main danger of Big Tech vendor lock-in?",
+                choices: [
+                    "A) Lower software prices",
+                    "B) Loss of control over your data and systems",
+                    "C) Faster internet speed"
+                ],
+                correctAnswer: "B"
+            }
+        ];
+
+        // Find current level
+        const currentLevel = levelData.find(l => l.id === levelId);
+
+        if (!currentLevel) {
+            document.querySelector('.quiz-container').innerHTML = '<h1>Level not found!</h1><a href="index.html" class="back-btn">← Back to Globe</a>';
+        } else {
+            // Populate level info
+            document.getElementById('level-name').textContent = currentLevel.name;
+            document.getElementById('level-difficulty').textContent = currentLevel.difficulty;
+            document.getElementById('quiz-question').textContent = currentLevel.question;
+
+            // Populate quiz
+            const choicesContainer = document.getElementById('quiz-choices');
+            let selectedChoice = null;
+
+            currentLevel.choices.forEach((choice) => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.textContent = choice;
+                btn.onclick = () => {
+                    document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedChoice = choice;
+                    document.getElementById('submit-btn').disabled = false;
+                };
+                choicesContainer.appendChild(btn);
+            });
+
+            // Submit handler
+            document.getElementById('submit-btn').onclick = () => {
+                if (!selectedChoice) return;
+
+                const feedback = document.getElementById('feedback');
+                const isCorrect = selectedChoice.startsWith(currentLevel.correctAnswer);
+
+                if (isCorrect) {
+                    feedback.textContent = '✅ Correct! Level completed! Redirecting to globe...';
+                    feedback.className = 'feedback success';
+                    feedback.style.display = 'block';
+
+                    // Save completion to localStorage
+                    const completedLevels = JSON.parse(localStorage.getItem('completedLevels') || '[]');
+                    if (!completedLevels.includes(levelId)) {
+                        completedLevels.push(levelId);
+                        localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
+                    }
+
+                    // Redirect to globe
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    feedback.textContent = '❌ Incorrect. Try again!';
+                    feedback.className = 'feedback error';
+                    feedback.style.display = 'block';
+                    document.getElementById('submit-btn').disabled = false;
+                    selectedChoice = null;
+                }
+            };
+        }
+    </script>
+</body>
+
+</html>

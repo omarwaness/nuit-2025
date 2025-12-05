@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 4: Kill Google Drive</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f4f8;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .migration-dashboard {
+            width: 1000px;
+            height: 650px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            background: #0082c9;
+            /* Nextcloud Blue */
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-stats {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .workspace {
+            flex-grow: 1;
+            display: flex;
+            padding: 30px;
+            gap: 50px;
+            background: #f8fafc;
+        }
+
+        /* Source & Destination Containers */
+        .cloud-container {
+            flex: 1;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .cloud-header {
+            padding: 15px;
+            font-weight: bold;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .source .cloud-header {
+            background: #fce8e6;
+            color: #d93025;
+        }
+
+        .dest .cloud-header {
+            background: #e6f4ea;
+            color: #1e8e3e;
+        }
+
+        .file-list {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .file-item {
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .file-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .file-item:active {
+            cursor: grabbing;
+        }
+
+        .file-icon {
+            font-size: 1.2rem;
+        }
+
+        .file-name {
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
+
+        .file-size {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        /* Drag & Drop States */
+        .cloud-container.drag-over {
+            border-color: #0082c9;
+            background: #e0f2fe;
+            transform: scale(1.02);
+        }
+
+        /* Progress Area */
+        .transfer-status {
+            height: 60px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            gap: 20px;
+        }
+
+        .progress-bar-bg {
+            flex-grow: 1;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: #0082c9;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .status-text {
+            font-size: 0.9rem;
+            color: #64748b;
+            min-width: 150px;
+            text-align: right;
+        }
+
+        /* Success Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 130, 201, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+            z-index: 100;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .success-desc {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background: white;
+            color: #0082c9;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            color: #0082c9;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html" class="back-btn">← Back to Globe</a>
+
+    <div class="migration-dashboard">
+        <div class="header">
+            <h1>☁️ Cloud Migration Tool</h1>
+            <div class="header-stats">Data Sovereignty: <span id="sovereignty-score">0%</span></div>
+        </div>
+
+        <div class="workspace">
+            <!-- Source: Google Drive -->
+            <div class="cloud-container source">
+                <div class="cloud-header">
+                    <span>🚫 Google Drive (Public Cloud)</span>
+                </div>
+                <div class="file-list" id="source-list">
+                    <div class="file-item" draggable="true" id="file1">
+                        <span class="file-icon">📄</span>
+                        <span class="file-name">Student_Grades.xlsx</span>
+                        <span class="file-size">2.4 MB</span>
+                    </div>
+                    <div class="file-item" draggable="true" id="file2">
+                        <span class="file-icon">📸</span>
+                        <span class="file-name">Class_Photos_2024.zip</span>
+                        <span class="file-size">150 MB</span>
+                    </div>
+                    <div class="file-item" draggable="true" id="file3">
+                        <span class="file-icon">📝</span>
+                        <span class="file-name">Exam_Papers_Confidential.pdf</span>
+                        <span class="file-size">5.1 MB</span>
+                    </div>
+                    <div class="file-item" draggable="true" id="file4">
+                        <span class="file-icon">💼</span>
+                        <span class="file-name">Financial_Reports.docx</span>
+                        <span class="file-size">1.2 MB</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Destination: Nextcloud -->
+            <div class="cloud-container dest" id="dest-zone">
+                <div class="cloud-header">
+                    <span>✅ Nextcloud (Private Server)</span>
+                </div>
+                <div class="file-list" id="dest-list">
+                    <div style="text-align: center; color: #94a3b8; margin-top: 50px; font-style: italic;"
+                        id="empty-msg">
+                        Drag files here to secure them
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="transfer-status">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill"></div>
+            </div>
+            <div class="status-text" id="status-text">Waiting for transfer...</div>
+        </div>
+    </div>
+
+    <div class="overlay" id="success-overlay">
+        <div class="success-icon">🔒</div>
+        <div class="success-title">Data Secured!</div>
+        <div class="success-desc">You have successfully migrated sensitive data to a private cloud.</div>
+        <button class="btn" onclick="completeLevel()">Continue Mission</button>
+    </div>
+
+    <script>
+        const draggables = document.querySelectorAll('.file-item');
+        const destZone = document.getElementById('dest-zone');
+        const destList = document.getElementById('dest-list');
+        const emptyMsg = document.getElementById('empty-msg');
+        const progressFill = document.getElementById('progress-fill');
+        const statusText = document.getElementById('status-text');
+        const scoreEl = document.getElementById('sovereignty-score');
+
+        let totalFiles = draggables.length;
+        let migratedFiles = 0;
+
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', () => {
+                draggable.classList.add('dragging');
+            });
+
+            draggable.addEventListener('dragend', () => {
+                draggable.classList.remove('dragging');
+            });
+        });
+
+        destZone.addEventListener('dragover', e => {
+            e.preventDefault();
+            destZone.classList.add('drag-over');
+        });
+
+        destZone.addEventListener('dragleave', () => {
+            destZone.classList.remove('drag-over');
+        });
+
+        destZone.addEventListener('drop', e => {
+            e.preventDefault();
+            destZone.classList.remove('drag-over');
+            const draggable = document.querySelector('.dragging');
+
+            if (draggable && draggable.parentElement.id === 'source-list') {
+                // Simulate transfer
+                simulateTransfer(draggable);
+            }
+        });
+
+        function simulateTransfer(element) {
+            statusText.textContent = `Transferring ${element.querySelector('.file-name').textContent}...`;
+            progressFill.style.width = '50%';
+            element.style.opacity = '0.5';
+
+            setTimeout(() => {
+                if (emptyMsg) emptyMsg.style.display = 'none';
+                destList.appendChild(element);
+                element.style.opacity = '1';
+                element.draggable = false; // Prevent moving back
+                element.style.cursor = 'default';
+                element.querySelector('.file-icon').textContent = '✅';
+
+                migratedFiles++;
+                updateProgress();
+            }, 800);
+        }
+
+        function updateProgress() {
+            const percentage = (migratedFiles / totalFiles) * 100;
+            progressFill.style.width = '0%'; // Reset for next file visual
+            scoreEl.textContent = Math.round(percentage) + '%';
+            statusText.textContent = `${migratedFiles}/${totalFiles} files secured`;
+
+            if (migratedFiles === totalFiles) {
+                statusText.textContent = "Migration Complete!";
+                progressFill.style.width = '100%';
+                setTimeout(() => {
+                    document.getElementById('success-overlay').classList.add('visible');
+                }, 1000);
+            }
+        }
+
+        function completeLevel() {
+            const levelId = 4;
+            const completedLevels = JSON.parse(localStorage.getItem('completedLevels') || '[]');
+            if (!completedLevels.includes(levelId)) {
+                completedLevels.push(levelId);
+                localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
+            }
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+
+</html>

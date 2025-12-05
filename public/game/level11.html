@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 11: Final NIRD Certification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: #f0f0f0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .certificate-container {
+            width: 900px;
+            height: 650px;
+            background: white;
+            border: 20px solid #2c3e50;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .border-inner {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px solid #c0392b;
+            pointer-events: none;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .checklist {
+            width: 100%;
+            max-width: 600px;
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            font-family: 'Arial', sans-serif;
+            font-size: 1.1rem;
+            color: #34495e;
+            opacity: 0.5;
+            transition: all 0.3s;
+        }
+
+        .check-item.active {
+            opacity: 1;
+            transform: translateX(10px);
+        }
+
+        .check-item.done {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #bdc3c7;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .checkbox.checked {
+            background: #27ae60;
+            border-color: #27ae60;
+            color: white;
+        }
+
+        .checkbox.checked::after {
+            content: '✓';
+        }
+
+        .seal {
+            width: 120px;
+            height: 120px;
+            background: #c0392b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-family: 'Arial', sans-serif;
+            font-size: 0.9rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: rotate(-15deg) scale(0);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-top: auto;
+        }
+
+        .seal.visible {
+            transform: rotate(-15deg) scale(1);
+        }
+
+        .sign-btn {
+            padding: 15px 40px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .sign-btn.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #f00;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #2c3e50;
+            text-decoration: none;
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html" class="back-btn">← Back to Globe</a>
+
+    <div class="certificate-container">
+        <div class="border-inner"></div>
+
+        <h1>Certificate of Independence</h1>
+        <h2>Awarded to the NIRD Agent</h2>
+
+        <div class="checklist">
+            <div class="check-item active" id="item1">
+                <div class="checkbox" onclick="check(1)"></div>
+                <span>Mastered Linux Operating Systems</span>
+            </div>
+            <div class="check-item" id="item2">
+                <div class="checkbox" onclick="check(2)"></div>
+                <span>Migrated to Private Cloud Infrastructure</span>
+            </div>
+            <div class="check-item" id="item3">
+                <div class="checkbox" onclick="check(3)"></div>
+                <span>Adopted Open Document Standards</span>
+            </div>
+            <div class="check-item" id="item4">
+                <div class="checkbox" onclick="check(4)"></div>
+                <span>Secured Network Against Intrusions</span>
+            </div>
+            <div class="check-item" id="item5">
+                <div class="checkbox" onclick="check(5)"></div>
+                <span>Contributed to Open Source Community</span>
+            </div>
+        </div>
+
+        <div class="seal" id="seal">
+            OFFICIAL<br>NIRD<br>CERTIFIED
+        </div>
+
+        <button class="sign-btn" id="sign-btn" onclick="finish()">Sign & Complete Mission</button>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
+
+        function check(step) {
+            if (step !== currentStep) return;
+
+            const item = document.getElementById('item' + step);
+            item.querySelector('.checkbox').classList.add('checked');
+            item.classList.add('done');
+            item.classList.remove('active');
+
+            if (step < totalSteps) {
+                currentStep++;
+                document.getElementById('item' + currentStep).classList.add('active');
+            } else {
+                document.getElementById('seal').classList.add('visible');
+                document.getElementById('sign-btn').classList.add('visible');
+                startConfetti();
+            }
+        }
+
+        function startConfetti() {
+            for (let i = 0; i < 100; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti';
+                c.style.left = Math.random() * 100 + 'vw';
+                c.style.top = -10 + 'px';
+                c.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                c.style.animationDuration = Math.random() * 3 + 2 + 's';
+                document.body.appendChild(c);
+            }
+        }
+
+        function finish() {
+            const levelId = 11;
+            const completedLevels = JSON.parse(localStorage.getItem('completedLevels') || '[]');
+            if (!completedLevels.includes(levelId)) {
+                completedLevels.push(levelId);
+                localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
+            }
+            alert("Congratulations! You have completed the NIRD Educational Game.");
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+
+</html>

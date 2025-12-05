@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 5: Office Without Microsoft</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #1d4e2d;
+            /* LibreOffice Green-ish */
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .converter-app {
+            width: 900px;
+            height: 600px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .app-header {
+            background: #0369a1;
+            /* LibreOffice Blue */
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .app-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .app-menu {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-left: 30px;
+        }
+
+        .workspace {
+            flex-grow: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .drop-zone {
+            width: 100%;
+            height: 200px;
+            border: 3px dashed #ccc;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .drop-zone:hover {
+            border-color: #0369a1;
+            background: #e0f2fe;
+        }
+
+        .drop-zone.active {
+            border-color: #0369a1;
+            background: #e0f2fe;
+            transform: scale(1.02);
+        }
+
+        .drop-icon {
+            font-size: 3rem;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .drop-text {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .drop-subtext {
+            font-size: 0.9rem;
+            color: #999;
+        }
+
+        .file-queue {
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .queue-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-icon {
+            font-size: 1.2rem;
+        }
+
+        .file-name {
+            font-weight: 500;
+        }
+
+        .file-status {
+            font-size: 0.85rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: #eee;
+            color: #666;
+        }
+
+        .file-status.converting {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+        .file-status.done {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .convert-btn {
+            padding: 15px 40px;
+            background: #0369a1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .convert-btn.ready {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .convert-btn:hover {
+            background: #0284c7;
+        }
+
+        /* Success Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .success-box {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 2px solid #0369a1;
+        }
+
+        .success-title {
+            font-size: 2rem;
+            color: #0369a1;
+            margin-bottom: 10px;
+        }
+
+        .success-desc {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .next-btn {
+            padding: 12px 30px;
+            background: #0369a1;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html" class="back-btn">← Back to Globe</a>
+
+    <div class="converter-app">
+        <div class="app-header">
+            <div class="app-logo">📄 LibreOffice Writer</div>
+            <div class="app-menu">
+                <span>File</span>
+                <span>Edit</span>
+                <span>View</span>
+                <span>Insert</span>
+                <span>Format</span>
+            </div>
+        </div>
+
+        <div class="workspace">
+            <div class="drop-zone" id="drop-zone">
+                <div class="drop-icon">📂</div>
+                <div class="drop-text">Open Proprietary Documents</div>
+                <div class="drop-subtext">Click to select .docx files to liberate</div>
+            </div>
+
+            <div class="file-queue" id="file-queue">
+                <!-- Files will appear here -->
+            </div>
+
+            <button class="convert-btn" id="convert-btn" onclick="startConversion()">Convert to Open Format
+                (.odt)</button>
+        </div>
+    </div>
+
+    <div class="overlay" id="success-overlay">
+        <div class="success-box">
+            <div class="success-title">Documents Liberated!</div>
+            <div class="success-desc">You've successfully switched to open standards.<br>No more vendor lock-in.</div>
+            <button class="next-btn" onclick="completeLevel()">Next Mission</button>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileQueue = document.getElementById('file-queue');
+        const convertBtn = document.getElementById('convert-btn');
+
+        const files = [
+            { name: "Project_Proposal.docx", size: "1.2 MB" },
+            { name: "Budget_2025.xlsx", size: "850 KB" },
+            { name: "Meeting_Notes.pptx", size: "2.4 MB" }
+        ];
+
+        let filesLoaded = false;
+
+        dropZone.addEventListener('click', () => {
+            if (filesLoaded) return;
+
+            files.forEach(file => {
+                const item = document.createElement('div');
+                item.className = 'queue-item';
+                item.innerHTML = `
+                    <div class="file-info">
+                        <span class="file-icon">🔒</span>
+                        <span class="file-name">${file.name}</span>
+                        <span style="color: #999; font-size: 0.8rem;">${file.size}</span>
+                    </div>
+                    <div class="file-status">Ready to convert</div>
+                `;
+                fileQueue.appendChild(item);
+            });
+
+            filesLoaded = true;
+            dropZone.style.display = 'none';
+            convertBtn.classList.add('ready');
+        });
+
+        function startConversion() {
+            const items = document.querySelectorAll('.queue-item');
+            let completed = 0;
+
+            items.forEach((item, index) => {
+                const status = item.querySelector('.file-status');
+                const name = item.querySelector('.file-name');
+                const icon = item.querySelector('.file-icon');
+
+                setTimeout(() => {
+                    status.textContent = "Converting...";
+                    status.className = "file-status converting";
+
+                    setTimeout(() => {
+                        status.textContent = "Converted (.odt)";
+                        status.className = "file-status done";
+                        name.textContent = name.textContent.replace('.docx', '.odt').replace('.xlsx', '.ods').replace('.pptx', '.odp');
+                        icon.textContent = "🔓";
+
+                        completed++;
+                        if (completed === items.length) {
+                            setTimeout(() => {
+                                document.getElementById('success-overlay').classList.add('visible');
+                            }, 1000);
+                        }
+                    }, 1500);
+                }, index * 800);
+            });
+        }
+
+        function completeLevel() {
+            const levelId = 5;
+            const completedLevels = JSON.parse(localStorage.getItem('completedLevels') || '[]');
+            if (!completedLevels.includes(levelId)) {
+                completedLevels.push(levelId);
+                localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
+            }
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 8: Cyber Attack Defense</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: #0a0a0a;
+            color: #0f0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .security-center {
+            width: 1000px;
+            height: 650px;
+            background: #111;
+            border: 2px solid #333;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            grid-template-rows: 60px 1fr;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .header {
+            grid-column: span 2;
+            background: #1a1a1a;
+            border-bottom: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            color: #f00;
+            font-weight: bold;
+            text-shadow: 0 0 10px #f00;
+        }
+
+        .threat-level {
+            color: #f00;
+            animation: pulse 1s infinite;
+        }
+
+        .sidebar {
+            background: #151515;
+            border-right: 2px solid #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .control-panel {
+            flex-grow: 1;
+            padding: 20px;
+            background: #000;
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* Traffic Monitor */
+        .monitor {
+            border: 1px solid #333;
+            background: #050505;
+            padding: 10px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            position: relative;
+        }
+
+        .monitor-title {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #333;
+            color: #fff;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+        }
+
+        .log-entry {
+            margin-bottom: 4px;
+        }
+
+        .log-entry.danger {
+            color: #f00;
+        }
+
+        .log-entry.safe {
+            color: #0f0;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 15px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .action-btn:hover {
+            border-color: #0f0;
+            background: #222;
+        }
+
+        .action-btn.active {
+            border-color: #0f0;
+            background: #002200;
+            color: #0f0;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #555;
+        }
+
+        .action-btn.active .status-dot {
+            background: #0f0;
+            box-shadow: 0 0 10px #0f0;
+        }
+
+        @keyframes pulse {
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Success Overlay */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 20, 0, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .success-title {
+            font-size: 3rem;
+            color: #0f0;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #0f0;
+        }
+
+        .success-desc {
+            color: #fff;
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+        }
+
+        .next-btn {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .next-btn:hover {
+            background: #fff;
+            box-shadow: 0 0 20px #fff;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #555;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            color: #0f0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="index.html" class="back-btn">← Back to Globe</a>
+
+    <div class="security-center">
+        <div class="header">
+            <div class="title">⚠️ SECURITY ALERT: INTRUSION DETECTED</div>
+            <div class="threat-level" id="threat-text">THREAT LEVEL: CRITICAL</div>
+        </div>
+
+        <div class="sidebar">
+            <div style="color: #aaa; font-size: 0.8rem; margin-bottom: 10px;">DEFENSE CONTROLS</div>
+
+            <button class="action-btn" id="btn-firewall" onclick="toggleDefense('firewall')">
+                <span>Enable Firewall (UFW)</span>
+                <div class="status-dot"></div>
+            </button>
+
+            <button class="action-btn" id="btn-ssh" onclick="toggleDefense('ssh')">
+                <span>Block SSH (Port 22)</span>
+                <div class="status-dot"></div>
+            </button>
+
+            <button class="action-btn" id="btn-ips" onclick="toggleDefense('ips')">
+                <span>Activate IPS</span>
+                <div class="status-dot"></div>
+            </button>
+        </div>
+
+        <div class="control-panel">
+            <div class="monitor" id="network-log">
+                <div class="monitor-title">NETWORK TRAFFIC</div>
+                <!-- Logs will appear here -->
+            </div>
+
+            <div class="monitor" id="system-log">
+                <div class="monitor-title">SYSTEM EVENTS</div>
+                <!-- Logs will appear here -->
+            </div>
+        </div>
+
+        <div class="overlay" id="success-overlay">
+            <div class="success-title">SYSTEM SECURED</div>
+            <div class="success-desc">Attack repelled. School network is safe.</div>
+            <button class="next-btn" onclick="completeLevel()">Next Mission</button>
+        </div>
+    </div>
+
+    <script>
+        const networkLog = document.getElementById('network-log');
+        const systemLog = document.getElementById('system-log');
+        const threatText = document.getElementById('threat-text');
+
+        let defenses = {
+            firewall: false,
+            ssh: false,
+            ips: false
+        };
+
+        let attackInterval;
+
+        function addLog(container, text, type) {
+            const div = document.createElement('div');
+            div.className = `log-entry ${type}`;
+            div.innerText = `[${new Date().toLocaleTimeString()}] ${text}`;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function startAttack() {
+            attackInterval = setInterval(() => {
+                if (!defenses.firewall) {
+                    addLog(networkLog, "INCOMING PACKET FROM 192.168.1.55 (UNKNOWN)", "danger");
+                }
+                if (!defenses.ssh) {
+                    addLog(systemLog, "Failed password for root from 192.168.1.55 port 22 ssh2", "danger");
+                }
+                if (!defenses.ips && Math.random() > 0.7) {
+                    addLog(networkLog, "DDOS ATTACK DETECTED - HIGH LOAD", "danger");
+                }
+            }, 800);
+        }
+
+        function toggleDefense(type) {
+            const btn = document.getElementById('btn-' + type);
+            defenses[type] = !defenses[type];
+
+            if (defenses[type]) {
+                btn.classList.add('active');
+                addLog(systemLog, `${type.toUpperCase()} ACTIVATED`, "safe");
+
+                if (type === 'firewall') addLog(networkLog, "Blocking unauthorized traffic...", "safe");
+                if (type === 'ssh') addLog(networkLog, "Port 22 closed.", "safe");
+                if (type === 'ips') addLog(systemLog, "Intrusion Prevention System monitoring...", "safe");
+
+                checkWin();
+            } else {
+                btn.classList.remove('active');
+                addLog(systemLog, `${type.toUpperCase()} DEACTIVATED`, "danger");
+            }
+        }
+
+        function checkWin() {
+            if (defenses.firewall && defenses.ssh && defenses.ips) {
+                clearInterval(attackInterval);
+                threatText.innerText = "THREAT LEVEL: NEUTRALIZED";
+                threatText.style.color = "#0f0";
+                threatText.style.animation = "none";
+
+                addLog(systemLog, "ALL SYSTEMS SECURE. ATTACK MITIGATED.", "safe");
+
+                setTimeout(() => {
+                    document.getElementById('success-overlay').classList.add('visible');
+                }, 1500);
+            }
+        }
+
+        function completeLevel() {
+            const levelId = 8;
+            const completedLevels = JSON.parse(localStorage.getItem('completedLevels') || '[]');
+            if (!completedLevels.includes(levelId)) {
+                completedLevels.push(levelId);
+                localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
+            }
+            window.location.href = 'index.html';
+        }
+
+        // Start simulation
+        startAttack();
+
+    </script>
+</body>
+
+</html>
