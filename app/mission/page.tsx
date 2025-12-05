@@ -128,18 +128,21 @@ export default function MissionPage() {
             <div className="absolute top-[-50%] right-[-10%] w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl"></div>
             
             <div className="relative z-10 space-y-6">
-               <h2 className="text-3xl md:text-5xl font-bold">Ready to join the Resistance?</h2>
-               <p className="text-slate-400 text-lg max-w-xl mx-auto">
-                  Start your journey today. Complete your first quest and become a Digital Guardian.
-               </p>
-               <div className="pt-4">
-                  <Link href="/">
-                  <button className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-all hover:scale-105 shadow-[0_0_20px_rgba(16,185,129,0.4)]">
-                     Start Mission Now
-                  </button>
-                  </Link>
-               </div>
+            <h2 className="text-3xl md:text-5xl font-bold">
+              Ready to join the Resistance?
+            </h2>
+            <p className="text-slate-400 text-lg max-w-xl mx-auto">
+              Start your journey today. Complete your first quest and become a
+              Digital Guardian by testing our chat bot.
+            </p>
+            <div className="pt-4">
+              <Link href="https://chatbot-2-hc0h.onrender.com">
+                <button className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-all hover:scale-105 shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+                  Start Mission Now
+                </button>
+              </Link>
             </div>
+          </div>
          </div>
       </div>
       <LogoutButton/>
