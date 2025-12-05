@@ -4,6 +4,7 @@ import { LogoutButton } from "@/components/logout-button";
 import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
 import { Target, Heart, Globe, ArrowRight, Lightbulb, ShieldCheck, Leaf } from "lucide-react";
+import Link from "next/link";
 
 export default function MissionPage() {
   return (
@@ -77,7 +78,7 @@ export default function MissionPage() {
                  The Problem: <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Planned Obsolescence</span>
               </h2>
               <p className="text-slate-600 text-lg leading-relaxed">
-                 [Insert text here about how devices are thrown away too quickly, how schools spend too much money on new tech, and the environmental impact of digital waste.]
+                 The approach, comprised of three stages ( mobilization , experimentation , and integration ), is intentionally not very detailed at this stage to allow for co-creation with participants. It is initially aimed at interested teachers, inviting them to join us on a dedicated Tchap forum to exchange ideas, share experiences, provide feedback, and help their schools become pilots for the initiative.
               </p>
               <ul className="space-y-3">
                  <ListItem text="Millions of tons of e-waste annually" />
@@ -103,7 +104,7 @@ export default function MissionPage() {
                  The Solution: <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-500">The NIRD Approach</span>
               </h2>
               <p className="text-slate-600 text-lg leading-relaxed">
-                 [Insert text here about how NIRD Quest turns learning into a game. Explain that by playing, students actually perform real-world actions like installing Linux or fixing a keyboard.]
+                 This approach is directly inspired by the success of the NIRD school project at the Carnot high school in Bruay-la-Buissière, which it hopes to see replicated and scaled up, by uniting existing initiatives and encouraging new initiatives among French schools, colleges and high schools.
               </p>
               <button className="text-emerald-600 font-bold flex items-center gap-2 hover:gap-3 transition-all">
                  Read our full Manifesto <ArrowRight className="w-4 h-4" />
@@ -126,9 +127,11 @@ export default function MissionPage() {
                   Start your journey today. Complete your first quest and become a Digital Guardian.
                </p>
                <div className="pt-4">
+                  <Link href="/">
                   <button className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-all hover:scale-105 shadow-[0_0_20px_rgba(16,185,129,0.4)]">
                      Start Mission Now
                   </button>
+                  </Link>
                </div>
             </div>
          </div>

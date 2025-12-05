@@ -2,16 +2,7 @@
 
 import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
-import {
-  ArrowRightLeft,
-  Shield,
-  Zap,
-  Download,
-  Layers,
-  Globe,
-  Smartphone,
-  Server,
-} from "lucide-react";
+import { Cpu, Globe, Layers } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getAlternatives } from "@/queries/getAlternatives";
 import { Alternative } from "@/types/alternatives";
@@ -67,24 +58,27 @@ export default function AlternativePage() {
           <ComparisonCard key={item.id} data={item} />
         ))}
       </div>
-
-      {/* --- SECTION 4: DOWNLOAD / CTA --- */}
-      <div className="mt-24 max-w-3xl mx-auto px-6 text-center">
-        <div className="p-8 rounded-3xl bg-slate-100 border border-slate-200">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">
-            Suggest an Alternative
-          </h2>
-          <p className="text-slate-500 mb-6">
-            Know a great open-source tool that helps the planet? Submit it to
-            the village archives.
-          </p>
-          <button className="px-6 py-3 bg-white border border-slate-300 rounded-xl font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-400 transition-all shadow-sm">
-            Submit Recommendation
-          </button>
+      <footer className="w-full flex flex-col items-center justify-center border-t border-slate-200 bg-white/50 backdrop-blur-sm mx-auto text-center text-xs gap-4 py-12 text-slate-500 mt-10">
+        <div className="flex gap-2 mb-2">
+          <Cpu className="w-5 h-5 opacity-50" />
+          <Globe className="w-5 h-5 opacity-50" />
         </div>
-      </div>
+        <p>
+          Powered by{" "}
+          <a
+            href="https://supabase.com"
+            target="_blank"
+            className="font-bold text-emerald-600 hover:underline"
+            rel="noreferrer"
+          >
+            Supabase
+          </a>
+        </p>
+        <p>
+          © 2025 La Nuit de l'Info - NIRD Resistance. Pour un avenir numérique
+          durable.
+        </p>
+      </footer>
     </main>
   );
 }
-
-
