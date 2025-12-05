@@ -34,7 +34,7 @@ const levelData = [
     {
         id: 2, level: 2,
         name: "💻 Windows Is Dying",
-        lat: 51.5074, lon: -0.1278, // London
+        lat: 41.0082, lon: 28.9784, // Istanbul (moved to create more space from Paris)
         state: "locked",
         difficulty: "Easy",
         description: "Identify machines that MUST leave Windows.",

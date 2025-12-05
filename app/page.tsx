@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { motion } from "framer-motion";
 import { Cpu, Globe, Recycle, Play, Terminal } from "lucide-react";
@@ -10,21 +9,12 @@ import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 
 export default function Home() {
   const [gameStarted, setGameStarted] = useState(false);
-  const [showMessage, setShowMessage] = useState(false);
   const gameContainerRef = useRef<HTMLDivElement>(null);
 
   const handleStartGame = () => {
     setGameStarted(true);
     // Logic to initialize your actual game engine (Phaser, Three.js, etc) would go here
     console.log("System Initialized...");
-  };
-
-  const handleGirlClick = () => {
-    setShowMessage(true);
-  };
-
-  const handleCloseMessage = () => {
-    setShowMessage(false);
   };
 
   return (
@@ -108,64 +98,13 @@ export default function Home() {
                 </div>
               ) : (
                 /* ACTUAL GAME MOUNT POINT */
-                <div className="w-full h-full relative overflow-hidden">
-                  <Image
-                    src="/map33.jpeg"
-                    alt="Village Map - Stone Creek Valley"
-                    fill
-                    className="object-cover"
-                    priority
-                    sizes="100vw"
+                <div className="relative w-full h-full bg-black overflow-hidden">
+                  <iframe
+                    src="/game/index.html"
+                    className="w-full h-full border-0"
+                    title="NIRD Educational Game - Interactive Globe"
+                    allow="fullscreen"
                   />
-                  
-                  {/* Girl Character - Clickable */}
-                  <button
-                    onClick={handleGirlClick}
-                    className="absolute bottom-[15%] left-[20%] z-30 hover:scale-110 transition-transform duration-200 cursor-pointer active:scale-95"
-                    style={{ filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.3))" }}
-                  >
-                    <Image
-                      src="/girl.png"
-                      alt="Girl Character"
-                      width={100}
-                      height={140}
-                      className="object-contain"
-                      style={{ imageRendering: "pixelated" }}
-                      priority
-                    />
-                  </button>
-
-                  {/* Message Dialog */}
-                  {showMessage && (
-                    <>
-                      {/* Backdrop */}
-                      <div
-                        className="absolute inset-0 bg-black/30 z-30"
-                        onClick={handleCloseMessage}
-                      />
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 20 }}
-                        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-40 w-[90%] max-w-md bg-slate-900/95 border-2 border-emerald-500 rounded-lg p-6 shadow-2xl"
-                        style={{ backdropFilter: "blur(10px)" }}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <div className="flex justify-between items-start mb-4">
-                          <h3 className="text-emerald-400 font-bold text-lg font-mono">Dialogue</h3>
-                          <button
-                            onClick={handleCloseMessage}
-                            className="text-slate-400 hover:text-white transition-colors text-xl leading-none w-6 h-6 flex items-center justify-center"
-                          >
-                            ×
-                          </button>
-                        </div>
-                        <p className="text-white font-mono text-sm leading-relaxed">
-                          Bonjour ! Bienvenue dans le village. Je peux vous aider à découvrir les secrets de N.I.R.D.
-                        </p>
-                      </motion.div>
-                    </>
-                  )}
                 </div>
               )}
 
