@@ -166,7 +166,10 @@ function init() {
     createClouds();
     createAtmosphere();
     loadProgress(); // Load saved progress
+    loadScores(); // Load saved scores
     createPins();
+    createTimeline();
+    updateScoreDisplay();
     createLevelPaths();
     setupControls();
     setupEventListeners();
@@ -196,6 +199,133 @@ function loadProgress() {
     // Ensure Level 1 is always unlocked if nothing is completed
     if (completedLevels.length === 0) {
         levelData[0].state = 'unlocked';
+    }
+}
+
+// ===== LOAD SCORES =====
+function loadScores() {
+    const savedScores = JSON.parse(localStorage.getItem('playerScores') || 'null');
+    if (savedScores) {
+        playerScores = savedScores;
+    }
+}
+
+// ===== SAVE SCORES =====
+function saveScores() {
+    localStorage.setItem('playerScores', JSON.stringify(playerScores));
+}
+
+// ===== GET TOTAL SCORE =====
+function getTotalScore() {
+    return Object.values(playerScores).reduce((sum, val) => sum + val, 0);
+}
+
+// ===== UPDATE SCORE DISPLAY =====
+function updateScoreDisplay() {
+    const scoreCategories = [
+        { key: 'privacy', label: 'Privacy', icon: '🔒' },
+        { key: 'independence', label: 'Independence', icon: '🗽' },
+        { key: 'budget', label: 'Budget', icon: '💰' },
+        { key: 'eco', label: 'Eco', icon: '🌱' },
+        { key: 'security', label: 'Security', icon: '🛡️' },
+        { key: 'collaboration', label: 'Collaboration', icon: '🤝' },
+        { key: 'awareness', label: 'Awareness', icon: '💡' },
+        { key: 'certification', label: 'Certification', icon: '🏆' }
+    ];
+
+    const scoreGrid = document.getElementById('score-grid');
+    if (!scoreGrid) return;
+
+    scoreGrid.innerHTML = '';
+    scoreCategories.forEach(cat => {
+        const value = playerScores[cat.key] || 0;
+        const maxValue = getMaxScoreForCategory(cat.key);
+        const percentage = maxValue > 0 ? (value / maxValue) * 100 : 0;
+
+        const scoreItem = document.createElement('div');
+        scoreItem.className = 'score-item';
+        scoreItem.innerHTML = `
+            <div class="score-label">${cat.icon} ${cat.label}</div>
+            <div class="score-bar">
+                <div class="score-fill" style="width: ${percentage}%"></div>
+            </div>
+            <div class="score-value">${value}</div>
+        `;
+        scoreGrid.appendChild(scoreItem);
+    });
+
+    // Update total score
+    const totalScoreEl = document.getElementById('total-score');
+    if (totalScoreEl) {
+        totalScoreEl.textContent = getTotalScore();
+    }
+}
+
+// ===== GET MAX SCORE FOR CATEGORY =====
+function getMaxScoreForCategory(category) {
+    let max = 0;
+    levelData.forEach(level => {
+        if (level.scoreEffects && level.scoreEffects[category]) {
+            max += level.scoreEffects[category];
+        }
+    });
+    return max;
+}
+
+// ===== CREATE TIMELINE =====
+function createTimeline() {
+    const timelineContainer = document.getElementById('timeline-container');
+    if (!timelineContainer) return;
+
+    timelineContainer.innerHTML = '';
+
+    levelData.forEach((level, index) => {
+        const timelineItem = document.createElement('div');
+        timelineItem.className = `timeline-item ${level.state}`;
+
+        let icon = '🔒';
+        if (level.state === 'completed') icon = '✅';
+        else if (level.state === 'unlocked') icon = '🎯';
+
+        timelineItem.innerHTML = `
+            <div class="timeline-number">${level.level}</div>
+            <div class="timeline-icon">${icon}</div>
+            <div class="timeline-name">${level.name}</div>
+        `;
+
+        timelineContainer.appendChild(timelineItem);
+
+        // Add connector line (except for last item)
+        if (index < levelData.length - 1) {
+            const connector = document.createElement('div');
+            connector.className = `timeline-connector ${level.state === 'completed' ? 'completed' : ''}`;
+            timelineContainer.appendChild(connector);
+        }
+    });
+
+    // Update progress percentage
+    const completedCount = levelData.filter(l => l.state === 'completed').length;
+    const progressPercent = Math.round((completedCount / levelData.length) * 100);
+    const progressEl = document.getElementById('progress-percent');
+    if (progressEl) {
+        progressEl.textContent = `${progressPercent}%`;
+    }
+}
+
+// ===== RESET GAME =====
+function resetGame() {
+    const confirmed = confirm('⚠️ Are you sure you want to reset ALL progress?\n\nThis will delete:\n- All completed levels\n- All scores\n- All saved times\n\nThis action cannot be undone!');
+
+    if (confirmed) {
+        localStorage.removeItem('completedLevels');
+        localStorage.removeItem('playerScores');
+        localStorage.removeItem('levelTimes');
+        // Clear any level start times
+        for (let i = 1; i <= 11; i++) {
+            localStorage.removeItem(`level${i}StartTime`);
+        }
+        alert('✅ Game reset successfully! Reloading...');
+        location.reload();
     }
 }
 
@@ -712,6 +842,9 @@ function setupEventListeners() {
     const actionBtn = document.getElementById('action-btn');
     if (actionBtn) actionBtn.addEventListener('click', startLevel);
 
+    const btnResetGame = document.getElementById('reset-game');
+    if (btnResetGame) btnResetGame.addEventListener('click', resetGame);
+
     updateButtonState('toggle-rotation', isAutoRotating);
     updateButtonState('toggle-clouds', showClouds);
     updateButtonState('toggle-atmosphere', showAtmosphere);
@@ -806,6 +939,10 @@ function closeInfoPanel() {
 // ===== LEVEL NAVIGATION =====
 function startLevel() {
     if (!currentSelectedLevel) return;
+
+    // Store start time for time-based scoring
+    const startTime = Date.now();
+    localStorage.setItem(`level${currentSelectedLevel.id}StartTime`, startTime.toString());
 
     // Navigate to level page with level ID as parameter
     window.location.href = `level${currentSelectedLevel.id}.html`;

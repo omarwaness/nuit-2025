@@ -8,6 +8,7 @@
         content="Interactive 3D Globe Map - Explore the world with stunning visuals and smooth interactions">
     <title>NIRD Educational Game - Interactive 3D Globe</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="game-features.css">
 </head>
 
 <body>
@@ -42,6 +43,10 @@
                 <span class="icon">✨</span>
                 <span class="label">Atmosphere</span>
             </button>
+            <button id="reset-game" class="control-btn reset-btn" title="Reset All Progress">
+                <span class="icon">🔄</span>
+                <span class="label">Reset Game</span>
+            </button>
         </div>
 
         <!-- Info Panel -->
@@ -74,6 +79,22 @@
         <div class="instructions">
             <p><strong>Controls:</strong></p>
             <p>🖱️ Drag to rotate • 🔍 Scroll to zoom • 📍 Click pins to explore</p>
+        </div>
+
+        <!-- Timeline Panel -->
+        <div class="timeline-panel">
+            <h3>🗺️ Progress Timeline <span id="progress-percent">0%</span></h3>
+            <div id="timeline-container" class="timeline-container"></div>
+        </div>
+
+        <!-- Score Dashboard -->
+        <div class="score-panel">
+            <h3>📊 Your Scores</h3>
+            <div id="score-grid" class="score-grid"></div>
+            <div class="total-score">
+                <span>Total Score:</span>
+                <span id="total-score" class="total-value">0</span>
+            </div>
         </div>
     </div>
 
