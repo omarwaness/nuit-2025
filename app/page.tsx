@@ -41,7 +41,7 @@ export default function Home() {
               PROTOCOLE <span className="text-emerald-600">N.I.R.D</span>
             </h1>
             <p className="text-slate-500 font-mono text-sm md:text-base">
-              Mission: Libérer l'école des géants du web
+              Mission: Free schools from web giants
             </p>
           </div>
 
@@ -68,7 +68,7 @@ export default function Home() {
             {/* Game Screen Area */}
             <div 
               ref={gameContainerRef}
-              className="flex-1 bg-amber-800 relative flex items-center justify-center"
+              className="flex-1 bg-transparent relative flex items-center justify-center"
               style={{
                 backgroundImage: "radial-gradient(#1e293b 1px, transparent 0)",
                 backgroundSize: "20px 20px"
@@ -82,8 +82,8 @@ export default function Home() {
                   </div>
                   <h2 className="text-white text-2xl font-mono tracking-widest">SYSTEM READY</h2>
                   <p className="text-emerald-400/60 text-sm max-w-md mx-auto">
-                    Prenez le contrôle. Détruisez les monopoles. <br/>
-                    Installez l'Open Source.
+                    Take control. Destroy monopolies. <br/>
+                    Install Open Source.
                   </p>
                   
                   <button 
@@ -114,7 +114,7 @@ export default function Home() {
           </motion.div>
 
           <div className="mt-8 animate-bounce text-slate-400">
-            ↓ Scroll pour l'histoire
+            ↓ Scroll for the story
           </div>
         </section>
 
@@ -134,30 +134,30 @@ export default function Home() {
               icon={<Cpu className="w-7 h-7 text-blue-600" />}
               bgIcon="bg-blue-50"
               title="Inclusion"
-              description="Logiciels libres GRATUITS, ordinateurs reconditionnés, accessible à tous."
+              description="FREE open-source software, refurbished computers, accessible to everyone."
             />
             <FeatureCard
               icon={<Globe className="w-7 h-7 text-amber-500" />}
               bgIcon="bg-amber-50"
-              title="Responsabilité"
-              description="Données en France (RGPD), contrôle total par l'école, éducation au numérique réel."
+              title="Responsibility"
+              description="Data in France (GDPR), full control by the school, real digital education."
             />
             <FeatureCard
               icon={<Recycle className="w-7 h-7 text-emerald-600" />}
               bgIcon="bg-emerald-50"
-              title="Durabilité"
-              description="Stop obsolescence programmée, Linux = moins d'énergie, 30kg déchets évités/PC."
+              title="Sustainability"
+              description="Stop planned obsolescence, Linux = less energy, 30kg waste avoided per PC."
             />
           </motion.div>
 
           {/* GLASSMORPHISM STATS BAR */}
           <div className="w-full max-w-4xl p-2 rounded-3xl bg-white/60 backdrop-blur-md border border-white shadow-xl shadow-slate-200/50">
             <div className="flex flex-col md:flex-row justify-between items-center px-8 py-6 gap-6 text-center">
-              <Stat number="19" label="Écoles NIRD" color="text-slate-900" />
+              <Stat number="19" label="NIRD Schools" color="text-slate-900" />
               <div className="w-full h-px md:w-px md:h-12 bg-slate-200"></div>
-              <Stat number="80k€" label="Économisés/an" color="text-emerald-600" />
+              <Stat number="80k€" label="Saved/year" color="text-emerald-600" />
               <div className="w-full h-px md:w-px md:h-12 bg-slate-200"></div>
-              <Stat number="50M" label="Tonnes Déchets/an" color="text-blue-600" />
+              <Stat number="50M" label="Tons Waste/year" color="text-blue-600" />
             </div>
           </div>
         </div>
@@ -168,10 +168,10 @@ export default function Home() {
             titleComponent={
               <>
                 <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
-                  Découvrez NIRD en action
+                  Discover NIRD in action
                 </h2>
                 <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
-                  Les écoles NIRD transforment l'éducation numérique avec des solutions libres et durables
+                  NIRD schools are transforming digital education with free and sustainable solutions
                 </p>
               </>
             }
@@ -179,10 +179,10 @@ export default function Home() {
             <div className="h-full w-full bg-gradient-to-br from-emerald-50 to-cyan-50 rounded-2xl p-8 flex flex-col items-center justify-center gap-6">
               <div className="text-center space-y-4">
                 <h3 className="text-3xl md:text-4xl font-bold text-slate-900">
-                  🎓 19 Écoles Pionnières
+                  🎓 19 Pioneer Schools
                 </h3>
                 <p className="text-lg text-slate-700 max-w-xl">
-                  De Bruay à la Polynésie, les écoles NIRD prouvent qu'un numérique libre, responsable et durable est possible.
+                  From Bruay to Polynesia, NIRD schools prove that free, responsible, and sustainable digital technology is possible.
                 </p>
               </div>
 
@@ -190,17 +190,17 @@ export default function Home() {
                 <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center">
                   <div className="text-4xl mb-2">💰</div>
                   <div className="text-2xl font-bold text-emerald-600">80 000€</div>
-                  <div className="text-sm text-slate-600">Économies par école/an</div>
+                  <div className="text-sm text-slate-600">Savings per school/year</div>
                 </div>
                 <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center">
                   <div className="text-4xl mb-2">🌱</div>
                   <div className="text-2xl font-bold text-emerald-600">30kg</div>
-                  <div className="text-sm text-slate-600">Déchets évités par PC</div>
+                  <div className="text-sm text-slate-600">Waste avoided per PC</div>
                 </div>
                 <div className="bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center">
                   <div className="text-4xl mb-2">🔒</div>
                   <div className="text-2xl font-bold text-emerald-600">100%</div>
-                  <div className="text-sm text-slate-600">Données en France</div>
+                  <div className="text-sm text-slate-600">Data in France</div>
                 </div>
               </div>
             </div>
@@ -219,7 +219,7 @@ export default function Home() {
               Supabase
             </a>
           </p>
-          <p>© 2025 La Nuit de l'Info - NIRD Resistance. Pour un avenir numérique durable.</p>
+          <p>© 2025 La Nuit de l'Info - NIRD Resistance. For a sustainable digital future.</p>
         </footer>
 
       </div>
