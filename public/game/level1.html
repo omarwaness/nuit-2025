@@ -305,6 +305,7 @@
         </div>
     </div>
 
+    <script src="scoring.js"></script>
     <script>
         const tasks = {
             'lsb_release -a': {
@@ -386,14 +387,17 @@ tmpfs           7.8G   54M  7.8G   1% /dev/shm
         }
 
         function completeLevel() {
-            // Save completion to localStorage
+            // Use time-based scoring system
             const levelId = 1;
-            const completedLevels = JSON.parse(localStorage.getItem('completedLevels') || '[]');
-            if (!completedLevels.includes(levelId)) {
-                completedLevels.push(levelId);
-                localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
-            }
-            window.location.href = 'index.html';
+            const completionData = completeLevelWithScoring(levelId);
+
+            // Show completion modal with scoring info
+            showCompletionModal(levelId, completionData);
+
+            // Navigate back after a delay
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 5000);
         }
 
         // Focus input on load
