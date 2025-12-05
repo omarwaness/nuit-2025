@@ -68,7 +68,7 @@ export default function Home() {
             {/* Game Screen Area */}
             <div 
               ref={gameContainerRef}
-              className="flex-1 bg-amber-800 relative flex items-center justify-center"
+              className="flex-1 bg-transparent relative flex items-center justify-center"
               style={{
                 backgroundImage: "radial-gradient(#1e293b 1px, transparent 0)",
                 backgroundSize: "20px 20px"
